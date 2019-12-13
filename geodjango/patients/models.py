@@ -13,3 +13,10 @@ class Patient(models.Model):
 
         # plural form in admin view
         verbose_name_plural = 'patients'
+
+class AustinGrid(models.Model):
+    name = models.IntegerField(default=0)
+    mpoly = models.MultiPolygonField(srid=4326)
+
+    def __str__(self):
+        return 'Name: {}'.format(self.name)
