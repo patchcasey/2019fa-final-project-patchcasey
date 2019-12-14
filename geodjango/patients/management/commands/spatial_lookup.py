@@ -1,35 +1,75 @@
 import os
 import pandas as pd
 from django.core.management import BaseCommand
-from ...models import Patient, AustinGrid
-
-def totally_real_regression_equation(*args):
-    pass
+from sklearn.ensemble import RandomForestClassifier
+from ...models import Patient, AustinGrid, RoundRockGrid
 
 class Command(BaseCommand):
     help = "performs spatial lookup"
     def handle(self, *args, **options):
 
         intersects = {}
-
+        # lookup which squares in grid have patients in them
         for patient in Patient.objects.all():
             # this finds the FID of the part of the grid the point exists in
             # this would be to find what underlying demographics of the region
             # influence patients coming from this location
             geom = patient.geom
-            intersect_grid_lookup = AustinGrid.objects.get(mpoly__intersects=geom)
-            intersect_grid_id = int((str(intersect_grid_lookup).split()[1]))
-            intersects.update({patient.pk:intersect_grid_id})
+            try:
+                intersect_grid_lookup = AustinGrid.objects.get(mpoly__intersects=geom)
+                intersect_grid_id = int((str(intersect_grid_lookup).split()[1]))
+                intersects.update({intersect_grid_id:patient.pk})
+            except:
+                pass
 
-        # This section simulates a logistic regressions
-        # obviously with this dummy data, we would not get any correlation
-        # but this is not a data science class, it is a Python class!
-        # for that reason, I am using a garbage "model" to show how it could be applied
-        totally_real_regression_equation(intersects)
+        grid_id_names = AustinGrid.objects.all()
+        grid_list = [grid.name for grid in grid_id_names]
+        grid_neg_pos = []
 
-        #outputs from coefficient
-        output_coefficient1 = -456.628
-        output_coefficient2 = 2.383
+        for x in range(210):
+            if x in intersects.keys():
+                grid_neg_pos.append(1)
+            else:
+                grid_neg_pos.append(0)
+
+        grid_dict = {"GEO_ID":grid_list, "Patient":grid_neg_pos}
+
+        pos_neg_df = pd.DataFrame(grid_dict)
+
+        filename = "grid_data.csv"
+        austin_grid_demog = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", 'data', filename),
+        )
+
+        roundrockgrid_grid_demog = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", 'data', "RoundRockGrid_data.csv"),
+        )
+
+
+        # # creates training data with demographics of each grid
+        # demog_df = pd.read_csv(austin_grid_demog)
+        # X = demog_df.drop('GEO_ID', axis=1)
+        # y = pos_neg_df['Patient']
+        #
+        # # trains random forest model
+        # rtree_clf = RandomForestClassifier(n_estimators=100, random_state=0, max_depth=5)
+        # rtree_clf.fit(X, y)
+        #
+        # # predicts on roundrock data set
+        # roundrock_demog_df = pd.read_csv(roundrockgrid_grid_demog)
+        # X_test = roundrock_demog_df.drop('GEO_ID', axis=1)
+        # probability_of_patient= list(rtree_clf.predict_proba(X_test)[:,1])
+        #
+        # roundrock_demog_df["patient_probability"] = probability_of_patient
+        #
+        # # updates roundrock data set probability of having a patient
+        # roundrock_model = RoundRockGrid.objects.all()
+        # for i in range(len(roundrock_model)):
+        #     roundrock_model[i].color = probability_of_patient[i]
+        #     roundrock_model[i].save()
+
+        for object in RoundRockGrid.objects.all():
+            print(object.mpoly[0][0][0])
 
 
 

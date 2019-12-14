@@ -20,3 +20,12 @@ class AustinGrid(models.Model):
 
     def __str__(self):
         return 'Name: {}'.format(self.name)
+
+class RoundRockGrid(models.Model):
+    name = models.IntegerField(default=0)
+    mpoly = models.MultiPolygonField(srid=4326)
+    color = models.FloatField(default=0)
+
+    def __str__(self):
+        return 'Name: {}'.format(self.name)
+

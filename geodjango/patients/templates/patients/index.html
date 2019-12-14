@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% load leaflet_tags %}
+{% leaflet_css %}
+{% leaflet_js %}
+
+<script type="text/javascript">
+    function map_init_basic (map, options) {
+
+        map.setView([30.230857,-97.76607], 12);
+
+    }
+</script>
+
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+
+
+</body>
+</html>

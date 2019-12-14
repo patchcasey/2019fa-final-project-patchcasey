@@ -9,11 +9,16 @@
 
 from .models import Patient
 from django.views.generic import TemplateView
-from djgeojson.views import GeoJSONLayerView
+from django.urls import path
 from django.conf.urls import url
+from . import views
 
+
+# urlpatterns = [
+#     url(r'^$', TemplateView.as_view(template_name='patients/index.html'), name='index')
+# ]
 
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
-    url(r'^patient.geojson$', GeoJSONLayerView.as_view(model=Patient), name='data')
-]
+    # ex: /polls/
+    path('', views.index, name='index')
+    ]
