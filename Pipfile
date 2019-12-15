@@ -12,6 +12,7 @@ pandas = "*"
 django-leaflet = "*"
 django-geojson = "*"
 scikit-learn = "*"
+pyshp = "*"
 
 [requires]
 python_version = "3.7"

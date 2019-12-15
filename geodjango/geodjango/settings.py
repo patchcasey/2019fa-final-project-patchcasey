@@ -134,3 +134,10 @@ SERIALIZATION_MODULES = {
     'geojson': 'djgeojson.serializers'
 }
 
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (30.323,-97.736),
+    'DEFAULT_ZOOM': 10,
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+}
+

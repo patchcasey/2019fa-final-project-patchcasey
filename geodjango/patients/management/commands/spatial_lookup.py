@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from django.core.management import BaseCommand
 from sklearn.ensemble import RandomForestClassifier
+import shapefile
+from json import dumps
 from ...models import Patient, AustinGrid, RoundRockGrid
 
 class Command(BaseCommand):
@@ -46,37 +48,24 @@ class Command(BaseCommand):
         )
 
 
-        # # creates training data with demographics of each grid
-        # demog_df = pd.read_csv(austin_grid_demog)
-        # X = demog_df.drop('GEO_ID', axis=1)
-        # y = pos_neg_df['Patient']
-        #
-        # # trains random forest model
-        # rtree_clf = RandomForestClassifier(n_estimators=100, random_state=0, max_depth=5)
-        # rtree_clf.fit(X, y)
-        #
-        # # predicts on roundrock data set
-        # roundrock_demog_df = pd.read_csv(roundrockgrid_grid_demog)
-        # X_test = roundrock_demog_df.drop('GEO_ID', axis=1)
-        # probability_of_patient= list(rtree_clf.predict_proba(X_test)[:,1])
-        #
-        # roundrock_demog_df["patient_probability"] = probability_of_patient
-        #
-        # # updates roundrock data set probability of having a patient
-        # roundrock_model = RoundRockGrid.objects.all()
-        # for i in range(len(roundrock_model)):
-        #     roundrock_model[i].color = probability_of_patient[i]
-        #     roundrock_model[i].save()
+        # creates training data with demographics of each grid
+        demog_df = pd.read_csv(austin_grid_demog)
+        X = demog_df.drop('GEO_ID', axis=1)
+        y = pos_neg_df['Patient']
 
-        for object in RoundRockGrid.objects.all():
-            print(object.mpoly[0][0][0])
+        # trains random forest model
+        rtree_clf = RandomForestClassifier(n_estimators=100, random_state=0, max_depth=5)
+        rtree_clf.fit(X, y)
 
+        # predicts on roundrock data set
+        roundrock_demog_df = pd.read_csv(roundrockgrid_grid_demog)
+        X_test = roundrock_demog_df.drop('GEO_ID', axis=1)
+        probability_of_patient= list(rtree_clf.predict_proba(X_test)[:,1])
 
+        roundrock_demog_df["patient_probability"] = probability_of_patient
 
-
-
-
-
-
-
-
+        # updates roundrock data set probability of having a patient
+        roundrock_model = RoundRockGrid.objects.all()
+        for i in range(len(roundrock_model)):
+            roundrock_model[i].color = probability_of_patient[i]
+            roundrock_model[i].save()
