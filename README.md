@@ -1,7 +1,7 @@
-#2019fa-final-project-patchcasey
+# 2019fa-final-project-patchcasey
 2019fa-final-project-patchcasey created by GitHub Classroom
 
-#Objective
+# Objective
 The objective of my final project was to build a framework for storing, processing, and displaying geospatial data in a Django framework. The reason for choosing Django is ultimately this would be a user-facing application that could be interacted with and manipulated by the end-user. The specific use case that I chose to explore in this project is an example patient population existing in Austin, TX (all fake data!). These patients live throughout the city and are patients of a local hospital, and I am thinking of opening a new hospital in Round Rock, TX. I want to pick the best spot for this hospital, so I enlist the help of a data scientist to model the areas that my patients live in, so I can pick the location that would serve most potential patients. What the data scientist does is build a grid over the patients and find the demographic variables in these grid squares, then does a spatial lookup to find which squares have patients in them. Then, this binary yes/no of patient existence is predicted based on the demographic variables, and applied to a grid in Round Rock, TX - showing the probability that each square would have a patient in it. The data is very rough and obviously representative - I wanted to focus on the Python, not the data science!
 
 My goal for this project (as stated in my proposal) was: "A working, minimum viable product GUI with data pipelining through Django application, with example predictive model."
